@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="../public/css/otp.css" />
+  </head>
+  <body>
+    <section>
+      <div class="container">
+        <h1 class="title">Enter OTP</h1>
+        <form action="/users/otp" method="post" id="otp-form">
+          <input type="text" name="otp" class="otp-input" maxlength="1" />
+          <input type="text" name="otp" class="otp-input" maxlength="1" />
+          <input type="text" name="otp" class="otp-input" maxlength="1" />
+          <input type="text" name="otp" class="otp-input" maxlength="1" />
+          <input type="text" name="otp" class="otp-input" maxlength="1" />
+          <input type="text" name="otp" class="otp-input" maxlength="1" />
+        </form>
+        <button class="" type="submit" id="verify-btn">Verify OTP</button>
+      </div>
+    </section>
+    <script src="../public/javascript/otp.js"></script>
+  </body>
+</html>

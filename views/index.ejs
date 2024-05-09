@@ -1,0 +1,118 @@
+<%- include ('include/header') %>
+    <div class="cont">
+      <div class="page-contents">
+        <div class="row">
+        <%- include ('include/sidebar')%>
+          <div class="col-10 colored-bg d-flex flex-column justify-content-between">
+       <%- include('include/searchbar')%>
+            <section class="rounded-4 sctn-body flex-grow-1">
+              <div class="row justify-content-between p-4">
+                <div class="col-4">
+                 <%- include ('include/title')%>
+                </div>
+                <div class="col-3">
+                  <div class="title-button d-flex justify-content-end">
+                    <button type="button" onclick="formOpen()" class="btn btn-primary px-3 py-2 rounded-4">
+                      Add Employee
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="table-content px-4 position-relative">
+                <table class="table">
+                  <thead>
+                    <tr class="tab-top">
+                      <th scope="col">
+                        Sl no <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        Name <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        Email <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        Phone <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        Gender <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        DOB <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        Country <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableBody">
+                    <tr>
+                      <th scope="row " class="table-slno">#01</th>
+                      <td><img src="img/Rectangle 346.png" alt="" class="rounded-5" />Mr. Michael Johnson</td>
+                      <td>michaeljohnson@example.com</td>
+                      <td>5551234567</td>
+                      <td>Male</td>
+                      <td>10 December 1985</td>
+                      <td>USA</td>
+                      <td>
+                        <div class="dropdown">
+                          <button class="btn nav-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis"></i>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li>
+                              <a class="dropdown-item" href="#"><i class="fa-regular fa-eye"></i> View Details</a>
+                            </li>
+                            <li class="" id="" onclick="editFormOpen()">
+                              <a class="dropdown-item" href="#">
+                                <span><i class="fa-solid fa-pencil"></i> </span>Edit</a
+                              >
+                            </li>
+                            <li onclick="delformOpen()">
+                              <a class="dropdown-item" href="#"> <i class="fa-solid fa-trash"></i> Delete</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                    <div id="notFoundPOPUP" class="notfound position-absolute p-5 "><h2 class="p-5 text-center">Employee Not found</div>
+
+                  </tbody>
+                </table>
+              </div>
+            </section>
+       <%- include ('include/pagenation') %>
+       
+          <%- include ('include/footer') %>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <!-- ADD Employee POPUP -->
+
+   <%- include ('include/addEmp') %>
+   
+
+   <%- include ('include/editEmp') %>
+
+
+
+ 
+   <%- include ('include/delEmp') %>
+
+
+
+
+    </div>
+    <div onclick="closeFunction()" id="overlayPopup" class="overlay"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+    <script src="/public/javascript/script.js"></script>
+  </body>
+</html>
