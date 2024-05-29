@@ -32,7 +32,6 @@ section {
 }
 #otp-form {
   width: 100%;
-  display: flex;
   gap: 20px;
   align-items: center;
   justify-content: center;
@@ -45,7 +44,6 @@ section {
   text-align: center;
   padding: 10px;
   width: 100%;
-  max-width: 70px;
   height: 70px;
   border-radius: 4px;
   outline: 2px solid rgb(66, 66, 66);

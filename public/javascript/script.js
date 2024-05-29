@@ -50,7 +50,6 @@ function closeFunction() {
   delopen.style.display = "none";
 }
 
-fetchData();
 let currentPage = 1;
 let itemsPerpage = 5;
 let totaitems = 0;
@@ -58,51 +57,27 @@ let tableContents = [];
 
 //!===========  FETCHING DATA  =========== //
 
-async function fetchData() {
-  await fetch("http://localhost:3001/employees")
-    .then((fetchData) => {
-      return fetchData.json();
-    })
-    .then((empData) => {
-      tableContents = empData.reverse();
-      console.log("tavble array", tableContents);
 
-      // table count
-      document.getElementById("count").addEventListener("change", () => {
-        dataCount = document.getElementById("count");
-        itemsPerpage = parseInt(dataCount.value);
-        console.log(itemsPerpage);
-        displayData(currentPage); //
-        pageNation();
-        highlight(currentPage);
+function displayData(data, currentPage) {
+  // const start = (page - 1) * itemsPerpage;
 
-        // end
-      });
-      displayData(currentPage);
-      pageNation();
-      highlight(currentPage);
-    });
-}
+  // const end = start + itemsPerpage;
 
-function displayData(page) {
-  const start = (page - 1) * itemsPerpage;
+  // let pageinatedData = tableContents.slice(start, end);
 
-  const end = start + itemsPerpage;
-
-  let pageinatedData = tableContents.slice(start, end);
-
-  console.log("CONVERTED DATA IS ", tableContents);
+  // console.log("CONVERTED DATA IS ", tableContents);
 
   let tableData = "";
+  let items = document.getElementById("count").value
 
-  let i = start;
+  let count = (currentPage - 1) * items;
 
-  pageinatedData.map((values) => {
-    i++;
+  data.map((values) => {
+    count++;
 
-    // totaitems++;
+    let slNumber = count > 9 ? `#${count}` : `#0${count}`;
 
-    let slNumber = i > 9 ? `#${i}` : `#0${i}`;
+
     tableData =
       tableData +
       `
@@ -138,59 +113,61 @@ function displayData(page) {
                     </tr>`;
   });
   document.getElementById("tableBody").innerHTML = tableData;
+
   console.log("FETCH COMPLETED");
-  console.log(totaitems);
+  // console.log(totaitems);
   highlight(currentPage);
 }
 
-function pageNation() {
-  let totalPage = Math.ceil(tableContents.length / itemsPerpage);
-  const pageNationUl = document.getElementById("pagenationcCOntainer");
-  pageNationUl.innerHTML = "";
+// function pageNation() {
+//   let totalPage = Math.ceil(tableContents.length / itemsPerpage);
+//   const pageNationUl = document.getElementById("pagenationcCOntainer");
+//   pageNationUl.innerHTML = "";
 
-  // back skip button  " < "  //
-  const backskip = document.createElement("li");
-  backskip.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
-  pageNationUl.appendChild(backskip);
+//   // back skip button  " < "  //
+//   const backskip = document.createElement("li");
+//   backskip.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+//   pageNationUl.appendChild(backskip);
 
-  backskip.addEventListener("click", () => {
-    if (currentPage > 1) {
-      currentPage--;
-    } else {
-      currentPage = 1;
-    }
-    displayData(currentPage);
-  });
+//   backskip.addEventListener("click", () => {
+//     if (currentPage > 1) {
+//       currentPage--;
+//     } else {
+//       currentPage = 1;
+//     }
+//     displayData(currentPage);
+//   });
 
-  //  skip buttons " 1 2 3 ... "  //
+//   //  skip buttons " 1 2 3 ... "  //
 
-  for (let i = 1; i <= totalPage; i++) {
-    const pageItems = document.createElement("li");
-    pageItems.textContent = `${i}`;
-    pageNationUl.appendChild(pageItems);
-    pageItems.addEventListener("click", () => {
-      currentPage = i;
-      displayData(currentPage);
-      highlight(currentPage);
-    });
-  }
+//   for (let i = 1; i <= totalPage; i++) {
+//     const pageItems = document.createElement("li");
+//     pageItems.textContent = `${i}`;
+//     pageNationUl.appendChild(pageItems);
+//     pageItems.addEventListener("click", () => {
+//       currentPage = i;
+//       displayData(currentPage);
+//       highlight(currentPage);
+//     });
+//   }
 
-  // front skip button  " > "  //
+//   // front skip button  " > "  //
 
-  const frontSkip = document.createElement("li");
-  frontSkip.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
-  pageNationUl.appendChild(frontSkip);
-  frontSkip.addEventListener("click", () => {
-    if (currentPage <= totalPage - 1) {
-      currentPage++;
-    } else {
-      currentPage = totalPage;
-    }
-    displayData(currentPage);
-  });
-}
+//   const frontSkip = document.createElement("li");
+//   frontSkip.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+//   pageNationUl.appendChild(frontSkip);
+//   frontSkip.addEventListener("click", () => {
+//     if (currentPage <= totalPage - 1) {
+//       currentPage++;
+//     } else {
+//       currentPage = totalPage;
+//     }
+//     displayData(currentPage);
+//   });
+// }
 
 // function to color highlight
+
 function highlight(currentPage) {
   const pageNationUl = document.getElementById("pagenationcCOntainer");
   let buttons = pageNationUl.querySelectorAll("li");
@@ -284,9 +261,8 @@ function postdata() {
         method: "POST",
         body: imgObject,
       });
-      tableContents.unshift(newUserData);
-      console.log(newUserData);
-      displayData(currentPage);
+      // tableContents.unshift(newUserData);
+      // console.log(newUserData);
     })
 
     .then(() => {
@@ -297,10 +273,8 @@ function postdata() {
         timer: 1500,
       });
     });
-  displayData(currentPage);
-  pageNation();
+    fetchSearchResults(searchQuery, 1);
   addFormClose();
-  fetchData();
 }
 
 //!===================================      ADD FORM VALIDATION    =====================================//
@@ -467,14 +441,15 @@ function deleteData(id) {
     .then((data) => {
       console.log("API RESPONCE DATA", data);
     })
-   
 
     .catch((error) => {
       console.log("error in deleting data", error);
     });
-    fetchData();
-    fetchData();
+   
+
   delformclose();
+  fetchSearchResults(searchQuery, 1);
+  fetchSearchResults(searchQuery, 1);
 
 }
 
@@ -596,12 +571,11 @@ function postEditedData(empid) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(editedUserData),
-  })
-    // .then((response) => response.json())
-    // .then((data) => {
-    //   console.log("Employee edited succesfully", data);
-    // });
- 
+  });
+  // .then((response) => response.json())
+  // .then((data) => {
+  //   console.log("Employee edited succesfully", data);
+  // });
 
   //*   edit img upload
   const profileImg = document.getElementById("Editupload");
@@ -613,10 +587,11 @@ function postEditedData(empid) {
     method: "POST",
     body: imgObject,
   });
-  fetchData();
-  fetchData();
 
   editFormClose();
+  fetchSearchResults(searchQuery, 1);
+  fetchSearchResults(searchQuery, 1);
+
 
 }
 
@@ -768,32 +743,137 @@ document.getElementById("editData").addEventListener("input", (event) => {
   document.getElementById(errorid).textContent = "";
 });
 
-function searching() {
-  let inputSearch = document.getElementById("dataSearch").value;
-  if (inputSearch === "") {
-    itemsPerpage = 5;
-    displayData(currentPage);
-    pageNation();
-    highlight(currentPage);
-  } else {
-    itemsPerpage = tableContents.length;
-    displayData((currentPage = 1));
-    pageNation();
-    inputSearch = inputSearch.toLowerCase();
-    let rows = document.getElementsByTagName("tr");
-    let found = false;
-    for (let i = 1; i < rows.length; i++) {
-      if (!rows[i].innerHTML.toLowerCase().includes(inputSearch)) {
-        rows[i].style.display = "none";
-      } else {
-        rows[i].style.display = "";
-        found = true;
-      }
-    }
-    if (found) {
-      document.getElementById("notFoundPOPUP").style.display = "none";
+// function searching() {
+//   let inputSearch = document.getElementById("dataSearch").value;
+//   if (inputSearch === "") {
+//     itemsPerpage = 5;
+//     displayData(currentPage);
+//     pageNation();
+//     highlight(currentPage);
+//   } else {
+//     itemsPerpage = tableContents.length;
+//     displayData((currentPage = 1));
+//     pageNation();
+//     inputSearch = inputSearch.toLowerCase();
+//     let rows = document.getElementsByTagName("tr");
+//     let found = false;
+//     for (let i = 1; i < rows.length; i++) {
+//       if (!rows[i].innerHTML.toLowerCase().includes(inputSearch)) {
+//         rows[i].style.display = "none";
+//       } else {
+//         rows[i].style.display = "";
+//         found = true;
+//       }
+//     }
+//     if (found) {
+//       document.getElementById("notFoundPOPUP").style.display = "none";
+//     } else {
+//       document.getElementById("notFoundPOPUP").style.display = "block";
+//     }
+//   }
+// }
+
+//* search and geting data
+
+let pagesize = 5;
+      // table count
+      document.getElementById("count").addEventListener("change", () => {
+        dataCount = document.getElementById("count");
+        pagesize = parseInt(dataCount.value);
+        fetchSearchResults(searchQuery, 1,pagesize);
+
+      });
+let searchQuery = document.getElementById("dataSearch").value;
+fetchSearchResults(searchQuery, 1);
+function fetchSearchResults(searchQuery, page,pagesize) {
+  const url = `http://localhost:3001/employees/searchAndPagination?search=${searchQuery}&page=${page}&pagesize=${pagesize}`;
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      let totalPage = data.pagination.totalPage;
+      let currentPage = data.pagination.currentPage;
+      displayData(data.users, currentPage);
+      renderPaginationButtons(totalPage, currentPage);
+    });
+}
+
+//search
+let searchBar = document.getElementById("dataSearch");
+searchBar.addEventListener("input", async () => {
+  console.log("its working");
+  let searchQuery = document.getElementById("dataSearch").value;
+  fetchSearchResults(searchQuery, 1);
+  highlight(currentPage);
+});
+
+//*pagination buttons
+function renderPaginationButtons(totalPage, currentPage) {
+  const pageNationUl = document.getElementById("pagenationcCOntainer");
+  pageNationUl.innerHTML = "";
+
+  // back skip button  " < "  //
+  const backskip = document.createElement("li");
+  backskip.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+  pageNationUl.appendChild(backskip);
+
+  backskip.addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
     } else {
-      document.getElementById("notFoundPOPUP").style.display = "block";
+      currentPage = 1;
     }
+    fetchSearchResults(searchQuery, currentPage,pagesize);
+    highlight(currentPage);
+  });
+  // page buttons
+  for (let i = 1; i <= totalPage; i++) {
+    const pageItems = document.createElement("li");
+    pageItems.textContent = `${i}`;
+    pageNationUl.appendChild(pageItems);
+    pageItems.addEventListener("click", () => {
+      let searchQuery = document.getElementById("dataSearch").value;
+      let page = parseInt(i);
+      fetchSearchResults(searchQuery, page,pagesize);
+      highlight(page);
+    });
+  }
+  // front skip button  " > "  //
+
+  const frontSkip = document.createElement("li");
+  frontSkip.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+  pageNationUl.appendChild(frontSkip);
+  frontSkip.addEventListener("click", () => {
+    if (currentPage <= totalPage - 1) {
+      currentPage++;
+    } else {
+      currentPage = totalPage;
+    }
+    fetchSearchResults(searchQuery, currentPage,pagesize);
+    highlight(currentPage);
+  });
+  function highlight(currentPage) {
+    const pageNationUl = document.getElementById("pagenationcCOntainer");
+    let buttons = pageNationUl.querySelectorAll("li");
+    buttons.forEach((li) => {
+      if (li.textContent == currentPage) {
+        li.classList.add("pagenation-color");
+      } else {
+        li.classList.remove("pagenation-color");
+      }
+    });
   }
 }
+
+//*logout user
+
+const logout = document.getElementById("Logout");
+logout.addEventListener("click", () => {
+  fetch("http://localhost:3001/users/logout", {
+    method: "GET",
+  }).then((res) => {
+    if (res.ok) {
+      window.location.href = res.url;
+    }
+  });
+});

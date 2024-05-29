@@ -3,42 +3,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const {transporter, sendOtp} = require("../config/otpGeneration");
 
-// const jwt = require("jsonwebtoken");
-//Regeister a user
-// POST/user
-//access Public
 
-// const regesterUser = asyncHandler(async (req, res) => {
-//   const {username, email, password} = req.body;
-//   if (!username || !email || !password) {
-//     res.status(400);
-//     throw new Error("All fields are mandatory!");
-//   }
-//   const userAvailable = await User.findOne({email});
-//   if (userAvailable) {
-//     res.status(400);
-//     throw new Error("User already registered!");
-//   }
-
-//   //Hashing password
-//   const hashedPassword = await bcrypt.hash(password, 10);
-//   console.log("Hashed Password:", hashedPassword);
-//   //new user
-//   const user = await User.create({
-//     username,
-//     email,
-//     password: hashedPassword,
-//   });
-//   console.log(`User created ${user}`);
-//   if (user) {
-//     res.status(201).json({_id: user.id, email: user.email});
-//   } else {
-//     res.status(400);
-//     throw new Error("User data not valid");
-//   }
-
-//   res.json({message: "Registration of employee"});
-// });
 
 //* otp Generation function
 function otpGeneration() {
@@ -52,21 +17,27 @@ const regesterUser = asyncHandler(async (req, res) => {
   const {username, email, password} = req.body;
   console.log(password);
   if (!username || !email || !password) {
-    res.status(400);
-    throw new Error("All fields are mandatory!");
+    return res.status(404).json({ error: "* All fields are required" });
+
+    // res.status(400);
+    // throw new Error("All fields are mandatory!");
   }
   const userAvailable = await User.findOne({email});
   if (userAvailable) {
-    res.render("signup", {
-      alreadyExists: "User Exist",
-    });
+    return res.status(404).json({ error: "* User already exist with this email" });
+
+    // res.render("login", {
+    //   alreadyExists: "User Exist",
+    // });
   } else {
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("dffggg")
+
     const {otp, experiationOtp} = otpGeneration();
     req.session.signupData = {username, email, password: hashedPassword, otpGeneration: otp, experiationOtp};
     sendOtp(email, otp);
-    return res.redirect("/otp");
+    return res.status(200).json({ message: "registration completed please enter otp" });
+
+    // return res.redirect("/otp");
   }
 });
 const otpVerify = asyncHandler(async (req, res) => {
@@ -88,67 +59,48 @@ const otpVerify = asyncHandler(async (req, res) => {
       password,
     });
     delete req.session.signupData;
-    return res.redirect("/signin");
+    return res.redirect("/login");
   } else {
-    return res.render("otp", {
+    return res.render("/otp", {
       error: " incorrect otp",
     });
   }
 });
-//Login a user
-// POST/login
-//access Public
-// const loginUser = asyncHandler(async (req, res) => {
-//   const {email , password}= req.body;
-//   if(!email || !password){
-//     res.status(400)
-//     throw new Error("All fields are mandatory")
-//   }
-//   const user = await User.findOne({email});
-//   //compare password with hashedpassword
-//   if(user && (await bcrypt.compare(password,user.password))){
-//     const accesstoken = jwt.sign({
-//       user:{
-//         username:user.username,
-//         email:user.email,
-//         id:user.id,
-//       }
-//     },process.env.ACCESS_TOKEN_SECERT,
-//   {expiresIn:"1m"})
-//     res.status(200).json({accesstoken});
 
-//   }else{
-//     res.status(401)
-//     throw new Error ("Email or password is not valid");
-//   }
-
-// });
 
 //*login user
 const loginUser = asyncHandler(async (req, res) => {
-  const {email, password} = req.body;
+  const { email, password } = req.body;
   try {
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).render("login", {emailNotFound: "User not Found"});
+      return res.status(404).json({ error: "* User not found with this email" });
     }
     const passwordCheck = await bcrypt.compare(password, user.password);
     if (passwordCheck) {
       req.session.isAuth = true;
-      res.redirect("/");
+      return res.status(200).json({ message: "Login successful" });
     } else {
-      return res.status(404).render("login", {wrongPassword: "wrong Password"});
+      return res.status(401).json({ error: "* The password you have entered is incorrect" });
     }
   } catch (error) {
     console.error(error);
-    return res.send("Error during Login");
+    return res.status(500).json({ error: "Error during login" });
   }
-});
-//current info of  a user
-// POST/current
-//access private
-// const currentUser = asyncHandler(async (req, res) => {
-//   res.json(req.user);
-// });
+  
 
-module.exports = {regesterUser, loginUser, otpVerify};
+});
+
+
+const logout = (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error in destroying session:", err);
+      return next(err);
+
+    }
+    res.redirect("/login")
+  });
+};
+
+module.exports = {regesterUser, loginUser, otpVerify ,logout};

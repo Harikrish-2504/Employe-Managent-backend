@@ -3,13 +3,13 @@ const {text} = require("body-parser");
 const nodemaier = require("nodemailer");
 
 //email
-const transporter = nodemaier.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// const transporter = nodemaier.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
 
 //send OTP
 const sendOtp = async (email, otp) => {
@@ -36,4 +36,4 @@ const sendOtp = async (email, otp) => {
   }
 };
 
-module.exports = {transporter,sendOtp}
+module.exports = {sendOtp}

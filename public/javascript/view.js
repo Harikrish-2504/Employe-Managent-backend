@@ -112,7 +112,7 @@ function editFormOpen() {
   const formBgopem = document.getElementById("overlayPopup");
   formBgopem.style.display = "block";
 
-  fetch(`http://localhost:3000/employees/${id}`, {
+  fetch(`http://localhost:3001/employees/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -122,11 +122,11 @@ function editFormOpen() {
     .then((data) => {
       console.log(data);
       document.getElementById("editSalutation").value = data.salutation;
-      document.getElementById("editFirstname").value = data.firstName;
-      document.getElementById("editLastname").value = data.lastName;
+      document.getElementById("editFirstname").value = data.firstname;
+      document.getElementById("editLastname").value = data.lastname;
       document.getElementById("editemailadd").value = data.email;
       document.getElementById("editMobile").value = data.phone;
-      document.getElementById("editQualification").value = data.qualifications;
+      document.getElementById("editQualification").value = data.qualification;
       document.getElementById("editAddress").value = data.address;
       document.getElementById("editcountry").value = data.country;
       document.getElementById("editState").value = data.state;
@@ -148,7 +148,7 @@ function editFormOpen() {
   //*    edit page img preview
   const editpreview = document.getElementById("editImgPrew");
   editpreview.style.height = "150px";
-  editpreview.src = `http://localhost:3000/employees/${id}/avatar`;
+  editpreview.src = `http://localhost:3001/uploads/${id}.jpg`;
 
   //* after edit
   let saveEdit = document.getElementById("editSubmitBtn");
@@ -206,7 +206,7 @@ function editFormOpen() {
     };
     console.log("edited data", editedUserData);
     console.log("BRFORE");
-    fetch(`http://localhost:3000/employees/${id}`, {
+    fetch(`http://localhost:3001/employees/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -221,14 +221,14 @@ function editFormOpen() {
     //*   edit img upload
     const profileImg = document.getElementById("Editupload");
     var imgObject = new FormData();
-    imgObject.append("avatar", profileImg.files[0]);
+    imgObject.append("image", profileImg.files[0]);
     console.log("img added succesfully"); //avata-img section name
 
-    fetch(`http://localhost:3000/employees/${id}/avatar`, {
+    fetch(`http://localhost:3001/employees/${id}/image`, {
       method: "POST",
       body: imgObject,
     });
-
+    fetchData();
     editFormClose();
   }
 
@@ -242,7 +242,7 @@ editinputimg.onchange = function () {
 //!=========================   DELETE DATA   ===========================//
 
 function deleteData() {
-  fetch(`http://localhost:3000/employees/${id}`, {
+  fetch(`http://localhost:3001/employees/${id}`, {
     method: "DELETE",
   })
     .then((response) => response.json())
@@ -254,7 +254,7 @@ function deleteData() {
     });
 
   delformclose();
-  window.location.href = "index.html";
+  window.location.href = "/";
 }
 
 
