@@ -1,0 +1,68 @@
+<%- include ('include/header') %>
+    <div class="cont">
+      <div class="page-contents">
+        <div class="row">
+        <%- include ('include/sidebar')%>
+          <div class="col-10 colored-bg d-flex flex-column justify-content-between">
+       <%- include('include/trashTitle')%>
+            <section class="rounded-4 sctn-body flex-grow-1">
+              <div class="row justify-content-between p-4">
+                <div class="col-4">
+                 <%- include ('include/title')%>
+                </div>
+
+              </div>
+
+              <div class="table-content px-4 position-relative">
+                <table class="table">
+                  <thead>
+                    <tr class="tab-top">
+                      <th scope="col">
+                        Sl no <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        Name <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        Email <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        Phone <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        Gender <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        DOB <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col">
+                        Country <span><i class="fa-solid fa-caret-down"></i></span>
+                      </th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableBody">
+    <div id="notFoundPOPUP" class="notfound position-absolute p-5 "><h2 class="p-5 text-center">Employee Not found</div>
+
+                  </tbody>
+                </table>
+              </div>
+            </section>
+       <%- include ('include/pagenation') %>
+       
+          <%- include ('include/footer') %>
+          </div>
+        </div>
+      </div>
+
+   <%- include ('include/permenantDlt') %>
+   <%- include ('include/restore') %>
+   
+    </div>
+    <div onclick="closeFunction()" id="overlayPopup" class="overlay"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+    <script src="/public/javascript/trash.js"></script>
+  </body>
+</html>

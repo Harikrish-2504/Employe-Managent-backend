@@ -3,17 +3,15 @@ const errorHandler = require("./middleware/errorHandller");
 const path = require("path");
 const connectDB = require("./config/dbConnection");
 const dotenv = require("dotenv").config();
-
-// const ejs = require("ejs");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const {sessionId} = require("./authentication");
 
 connectDB();
+
 const app = express();
 
 const PORT = process.env.PORT || 3001;
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -37,7 +35,6 @@ app.use(express.static(path.join()));
 app.use("/employees", require("./routes/empRoutes"));
 app.use("/", require("./routes/viewRoutes"));
 app.use("/users", require("./routes/userRoutes"));
-
 
 app.listen(PORT, () => {
   console.log(`The server is running on: http://localhost:${PORT}`);

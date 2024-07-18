@@ -57,18 +57,11 @@ let tableContents = [];
 
 //!===========  FETCHING DATA  =========== //
 
-
 function displayData(data, currentPage) {
-  // const start = (page - 1) * itemsPerpage;
 
-  // const end = start + itemsPerpage;
-
-  // let pageinatedData = tableContents.slice(start, end);
-
-  // console.log("CONVERTED DATA IS ", tableContents);
 
   let tableData = "";
-  let items = document.getElementById("count").value
+  let items = document.getElementById("count").value;
 
   let count = (currentPage - 1) * items;
 
@@ -77,13 +70,12 @@ function displayData(data, currentPage) {
 
     let slNumber = count > 9 ? `#${count}` : `#0${count}`;
 
-
     tableData =
       tableData +
       `
       <tr>
                       <th scope="row " class="table-slno">${slNumber}</th>
-                      <td><img src="http://localhost:3001/uploads/${values._id}.jpg" alt="" class="rounded-5 mx-2
+                      <td><img src="http://localhost:3001/${values.image}" alt="" class="rounded-5 mx-2
                       " height="30px" />${values.salutation} ${values.firstname} ${values.lastname}</td>
                       <td>${values.email}</td>
                       <td>${values.phone}</td>
@@ -105,7 +97,7 @@ function displayData(data, currentPage) {
                               >
                             </li>
                             <li onclick="delformOpen()">
-                              <a class="dropdown-item" href="#" onclick="passid('${values._id}')"> <i class="fa-solid fa-trash"></i> Delete</a>
+                              <a class="dropdown-item" href="#" onclick="passid('${values._id}')"> <i class="fa-solid fa-trash"></i> Move to Trash</a>
                             </li>
                           </ul>
                         </div>
@@ -113,60 +105,9 @@ function displayData(data, currentPage) {
                     </tr>`;
   });
   document.getElementById("tableBody").innerHTML = tableData;
-
   console.log("FETCH COMPLETED");
-  // console.log(totaitems);
   highlight(currentPage);
 }
-
-// function pageNation() {
-//   let totalPage = Math.ceil(tableContents.length / itemsPerpage);
-//   const pageNationUl = document.getElementById("pagenationcCOntainer");
-//   pageNationUl.innerHTML = "";
-
-//   // back skip button  " < "  //
-//   const backskip = document.createElement("li");
-//   backskip.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
-//   pageNationUl.appendChild(backskip);
-
-//   backskip.addEventListener("click", () => {
-//     if (currentPage > 1) {
-//       currentPage--;
-//     } else {
-//       currentPage = 1;
-//     }
-//     displayData(currentPage);
-//   });
-
-//   //  skip buttons " 1 2 3 ... "  //
-
-//   for (let i = 1; i <= totalPage; i++) {
-//     const pageItems = document.createElement("li");
-//     pageItems.textContent = `${i}`;
-//     pageNationUl.appendChild(pageItems);
-//     pageItems.addEventListener("click", () => {
-//       currentPage = i;
-//       displayData(currentPage);
-//       highlight(currentPage);
-//     });
-//   }
-
-//   // front skip button  " > "  //
-
-//   const frontSkip = document.createElement("li");
-//   frontSkip.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
-//   pageNationUl.appendChild(frontSkip);
-//   frontSkip.addEventListener("click", () => {
-//     if (currentPage <= totalPage - 1) {
-//       currentPage++;
-//     } else {
-//       currentPage = totalPage;
-//     }
-//     displayData(currentPage);
-//   });
-// }
-
-// function to color highlight
 
 function highlight(currentPage) {
   const pageNationUl = document.getElementById("pagenationcCOntainer");
@@ -180,10 +121,11 @@ function highlight(currentPage) {
   });
 }
 
-// add dta button
+//* ADd Button
 
 const addEmloyeeSubmit = document.getElementById("addSubmit");
 addEmloyeeSubmit.addEventListener("click", () => {
+  // console.log(document.getElementById("AddDataForm").serializeArray())
   const validation = addFormValidation();
 
   if (!validation) {
@@ -194,7 +136,7 @@ addEmloyeeSubmit.addEventListener("click", () => {
 });
 
 //!===========  POST DATA  ===========//
-function postdata() {
+async function postdata() {
   const salutation = document.getElementById("Salutation").value;
   const Firstname = document.getElementById("Firstname").value;
   const Lastname = document.getElementById("Lastname").value;
@@ -211,13 +153,12 @@ function postdata() {
   const city = document.getElementById("city").value;
   const pinzip = document.getElementById("pinzip").value;
 
-  //*converting DOB =>
+  //*converting DOB
   console.log("username", username);
   const [year, month, day] = dob.split("-");
   const newDob = `${day}-${month}-${year}`;
   console.log(newDob);
 
-  //*creating an object for storing user data =>
   var newUserData = {
     salutation: salutation,
     firstname: Firstname,
@@ -235,46 +176,44 @@ function postdata() {
     username: username,
     password: password,
   };
-  console.log("BRFORE");
-  fetch("http://localhost:3001/employees", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(newUserData),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Employee added succesfully", data);
-      var user = data.id;
-      newUserData.id = user;
-      console.log(newUserData);
 
-      //!=============================== IMG UPLOAD ==========================================//
-
-      const profileImg = document.getElementById("upload");
-      var imgObject = new FormData();
-      imgObject.append("image", profileImg.files[0]);
-      console.log("img added succesfully"); //avata-img section name
-
-      fetch(`http://localhost:3001/employees/${data._id}/image`, {
-        method: "POST",
-        body: imgObject,
-      });
-      // tableContents.unshift(newUserData);
-      // console.log(newUserData);
-    })
-
-    .then(() => {
-      Swal.fire({
-        icon: "success",
-        title: "ADD EMPLOYEE SUCCESFULL",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+  try {
+    const response = await fetch("http://localhost:3001/employees", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUserData),
     });
+
+    const data = await response.json();
+    console.log("Employee added successfully", data);
+
+    //!=============================== IMG UPLOAD ==========================================//
+
+    const profileImg = document.getElementById("upload");
+    var imgObject = new FormData();
+    imgObject.append("image", profileImg.files[0]);
+    console.log("img added successfully");
+
+    await fetch(`http://localhost:3001/employees/${data._id}/image`, {
+      method: "POST",
+      body: imgObject,
+    });
+
+    Swal.fire({
+      icon: "success",
+      title: "ADD EMPLOYEE SUCCESSFUL",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    document.getElementById("AddDataForm").reset();
+    resetAvatarPreview();
+    addFormClose();
     fetchSearchResults(searchQuery, 1);
-  addFormClose();
+  } catch (error) {
+    console.error("Error", error);
+  }
 }
 
 //!===================================      ADD FORM VALIDATION    =====================================//
@@ -417,10 +356,16 @@ function addFormValidation() {
 
 //*==========================  img Preview  ====================================//
 function avatarPreview() {
-  const preview = document.getElementById("avatarimg"); //img id
+  const preview = document.getElementById("avatarimg");
   preview.src = URL.createObjectURL(event.target.files[0]);
   preview.style.height = "100px";
   document.getElementById("uploadicons").style.display = "none";
+}
+function resetAvatarPreview() {
+  const preview = document.getElementById("avatarimg");
+  preview.src = "";
+  preview.style.height = "";
+  document.getElementById("uploadicons").style.display = "block";
 }
 
 //-----passing id when clicking delete button in modal-------//
@@ -433,27 +378,37 @@ function passid(id) {
 }
 
 //!=========================   DELETE DATA   ===========================//
-function deleteData(id) {
-  fetch(`http://localhost:3001/employees/${id}`, {
-    method: "DELETE",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("API RESPONCE DATA", data);
-    })
-
-    .catch((error) => {
-      console.log("error in deleting data", error);
-    });
-   
-
-  delformclose();
-  fetchSearchResults(searchQuery, 1);
-  fetchSearchResults(searchQuery, 1);
-
-}
+// async function deleteData(id) {
+//   try {
+//     const response = await fetch(`http://localhost:3001/employees/${id}`, {
+//       method: "DELETE",
+//     });
+//     const data = await response.json();
+//     console.log("Deleted DATA", data);
+//   } catch (error) {
+//     console.log("error in deleting data", error);
+//   }
+//   delformclose();
+//   fetchSearchResults(searchQuery, 1);
+// }
 
 // *---- img preview on edit page ---- //
+async function deleteData(id) {
+  try {
+    const response = await fetch(`http://localhost:3001/employees/delete/${id}`, {
+      method: "PUT",
+    });
+    const data = await response.json();
+    console.log("Deleted DATA", data);
+  } catch (error) {
+    console.log("error in deleting data", error);
+  }
+  delformclose();
+  fetchSearchResults(searchQuery, 1);
+}
+
+
+
 
 let editimage = document.getElementById("editImgPrew");
 let editinputimg = document.getElementById("Editupload");
@@ -463,65 +418,65 @@ editinputimg.onchange = function () {
 
 //!-----------------------------EDIT DATA-----------------------------//
 
-function editFormOpen(empid) {
+async function editFormOpen(empid) {
   console.log(empid);
   const editopen = document.getElementById("editData");
   editopen.style.display = "block";
   const formBgopem = document.getElementById("overlayPopup");
   formBgopem.style.display = "block";
-
-  fetch(`http://localhost:3001/employees/${empid}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      document.getElementById("editSalutation").value = data.salutation;
-      document.getElementById("editFirstname").value = data.firstname;
-      document.getElementById("editLastname").value = data.lastname;
-      document.getElementById("editemailadd").value = data.email;
-      document.getElementById("editMobile").value = data.phone;
-      document.getElementById("edituserName").value = data.username;
-      document.getElementById("editPassword").value = data.password;
-      document.getElementById("editQualification").value = data.qualification;
-      document.getElementById("editAddress").value = data.address;
-      document.getElementById("editcountry").value = data.country;
-      document.getElementById("editState").value = data.state;
-      document.getElementById("editCity").value = data.city;
-      document.getElementById("editZip").value = data.pin;
-      document.getElementById("editemailadd").value = data.email;
-
-      //!---------dob change--------
-      const [day, month, year] = data.dob.split("-");
-      const newDob = `${year}-${month}-${day}`;
-      document.getElementById("editDob").value = newDob;
-
-      //!  GENDER
-
-      document.querySelector(`input[name="editGenders"][value='${data.gender}']`).checked = true;
+  try {
+    const response = await fetch(`http://localhost:3001/employees/${empid}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+    const data = await response.json();
+    document.getElementById("editSalutation").value = data.salutation;
+    document.getElementById("editFirstname").value = data.firstname;
+    document.getElementById("editLastname").value = data.lastname;
+    document.getElementById("editemailadd").value = data.email;
+    document.getElementById("editMobile").value = data.phone;
+    document.getElementById("edituserName").value = data.username;
+    document.getElementById("editPassword").value = data.password;
+    document.getElementById("editQualification").value = data.qualification;
+    document.getElementById("editAddress").value = data.address;
+    document.getElementById("editcountry").value = data.country;
+    document.getElementById("editState").value = data.state;
+    document.getElementById("editCity").value = data.city;
+    document.getElementById("editZip").value = data.pin;
+    document.getElementById("editemailadd").value = data.email;
 
-  //edit page img preview
-  const editpreview = document.getElementById("editImgPrew");
-  editpreview.style.height = "150px";
-  editpreview.src = `http://localhost:3001/uploads/${empid}.jpg`;
+    //!---------dob change--------
+    const [day, month, year] = data.dob.split("-");
+    const newDob = `${year}-${month}-${day}`;
+    document.getElementById("editDob").value = newDob;
 
-  // after edit
-  let saveEdit = document.getElementById("editSubmitBtn");
-  saveEdit.addEventListener("click", () => {
-    const editsubmit = editFormValidation();
-    if (!editsubmit) {
-      return;
-    } else {
-      postEditedData(empid);
-    }
-  });
+    //!  GENDER
+
+    document.querySelector(`input[name="editGenders"][value='${data.gender}']`).checked = true;
+
+    //edit page img preview
+    const editpreview = document.getElementById("editImgPrew");
+    editpreview.style.height = "150px";
+    editpreview.src = `http://localhost:3001/uploads/${empid}.jpg`;
+
+    // after edit
+    let saveEdit = document.getElementById("editSubmitBtn");
+    saveEdit.addEventListener("click", () => {
+      const editsubmit = editFormValidation();
+      if (!editsubmit) {
+        return;
+      } else {
+        postEditedData(empid);
+      }
+    });
+  } catch (error) {
+    console.error("Error in Geting Emp data", error);
+  }
 }
 //!==================Posting Edited  data after validation =======================//
-function postEditedData(empid) {
+async function postEditedData(empid) {
   const salutation = document.getElementById("editSalutation").value;
   const Firstname = document.getElementById("editFirstname").value;
   const Lastname = document.getElementById("editLastname").value;
@@ -562,37 +517,34 @@ function postEditedData(empid) {
     username: username,
     password: password,
   };
-  console.log("edited data", editedUserData);
-  console.log("BRFORE");
-  var newid = empid;
-  fetch(`http://localhost:3001/employees/${empid}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(editedUserData),
-  });
-  // .then((response) => response.json())
-  // .then((data) => {
-  //   console.log("Employee edited succesfully", data);
-  // });
 
-  //*   edit img upload
-  const profileImg = document.getElementById("Editupload");
-  var imgObject = new FormData();
-  imgObject.append("image", profileImg.files[0]);
-  console.log("img added succesfully"); //avata-img section name
+  try {
+    const response = await fetch(`http://localhost:3001/employees/${empid}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedUserData),
+    });
 
-  fetch(`http://localhost:3001/employees/${empid}/image`, {
-    method: "POST",
-    body: imgObject,
-  });
+    const data = await response.json();
+    console.log("Employee edited succesfully", data);
+    //*   edit img upload
+    const profileImg = document.getElementById("Editupload");
+    var imgObject = new FormData();
+    imgObject.append("image", profileImg.files[0]);
+    console.log("img added succesfully"); //avata-img section name
+
+    await fetch(`http://localhost:3001/employees/${empid}/image`, {
+      method: "POST",
+      body: imgObject,
+    });
+  } catch (error) {
+    console.error("Error in Editing Employee", error);
+  }
 
   editFormClose();
   fetchSearchResults(searchQuery, 1);
-  fetchSearchResults(searchQuery, 1);
-
-
 }
 
 //!=============================  EDIT FORM VALIDATION ==============================//
@@ -743,49 +695,18 @@ document.getElementById("editData").addEventListener("input", (event) => {
   document.getElementById(errorid).textContent = "";
 });
 
-// function searching() {
-//   let inputSearch = document.getElementById("dataSearch").value;
-//   if (inputSearch === "") {
-//     itemsPerpage = 5;
-//     displayData(currentPage);
-//     pageNation();
-//     highlight(currentPage);
-//   } else {
-//     itemsPerpage = tableContents.length;
-//     displayData((currentPage = 1));
-//     pageNation();
-//     inputSearch = inputSearch.toLowerCase();
-//     let rows = document.getElementsByTagName("tr");
-//     let found = false;
-//     for (let i = 1; i < rows.length; i++) {
-//       if (!rows[i].innerHTML.toLowerCase().includes(inputSearch)) {
-//         rows[i].style.display = "none";
-//       } else {
-//         rows[i].style.display = "";
-//         found = true;
-//       }
-//     }
-//     if (found) {
-//       document.getElementById("notFoundPOPUP").style.display = "none";
-//     } else {
-//       document.getElementById("notFoundPOPUP").style.display = "block";
-//     }
-//   }
-// }
-
-//* search and geting data
+//!============ search and geting data ======================//
 
 let pagesize = 5;
-      // table count
-      document.getElementById("count").addEventListener("change", () => {
-        dataCount = document.getElementById("count");
-        pagesize = parseInt(dataCount.value);
-        fetchSearchResults(searchQuery, 1,pagesize);
-
-      });
+// table count
+document.getElementById("count").addEventListener("change", () => {
+  dataCount = document.getElementById("count");
+  pagesize = parseInt(dataCount.value);
+  fetchSearchResults(searchQuery, 1, pagesize);
+});
 let searchQuery = document.getElementById("dataSearch").value;
 fetchSearchResults(searchQuery, 1);
-function fetchSearchResults(searchQuery, page,pagesize) {
+function fetchSearchResults(searchQuery, page, pagesize) {
   const url = `http://localhost:3001/employees/searchAndPagination?search=${searchQuery}&page=${page}&pagesize=${pagesize}`;
   fetch(url)
     .then((res) => res.json())
@@ -823,7 +744,7 @@ function renderPaginationButtons(totalPage, currentPage) {
     } else {
       currentPage = 1;
     }
-    fetchSearchResults(searchQuery, currentPage,pagesize);
+    fetchSearchResults(searchQuery, currentPage, pagesize);
     highlight(currentPage);
   });
   // page buttons
@@ -834,7 +755,7 @@ function renderPaginationButtons(totalPage, currentPage) {
     pageItems.addEventListener("click", () => {
       let searchQuery = document.getElementById("dataSearch").value;
       let page = parseInt(i);
-      fetchSearchResults(searchQuery, page,pagesize);
+      fetchSearchResults(searchQuery, page, pagesize);
       highlight(page);
     });
   }
@@ -849,7 +770,7 @@ function renderPaginationButtons(totalPage, currentPage) {
     } else {
       currentPage = totalPage;
     }
-    fetchSearchResults(searchQuery, currentPage,pagesize);
+    fetchSearchResults(searchQuery, currentPage, pagesize);
     highlight(currentPage);
   });
   function highlight(currentPage) {
@@ -873,7 +794,9 @@ logout.addEventListener("click", () => {
     method: "GET",
   }).then((res) => {
     if (res.ok) {
+      
       window.location.href = res.url;
+
     }
   });
 });

@@ -15,3 +15,6 @@ exports.rendersignup = (req,res) => {
 exports.renderOtp = (req,res) => {
     res.render("otp");
 }
+exports.renderTrash = (req,res) => {
+    res.render("trash");
+}

@@ -11,7 +11,7 @@ const nodemaier = require("nodemailer");
 //   },
 // });
 
-//send OTP
+//*send OTP
 const sendOtp = async (email, otp) => {
   const otpmail = nodemaier.createTransport({
     service: "gmail",
@@ -36,4 +36,4 @@ const sendOtp = async (email, otp) => {
   }
 };
 
-module.exports = {sendOtp}
+module.exports = {sendOtp};

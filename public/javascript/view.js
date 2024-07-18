@@ -3,11 +3,7 @@
 const url = new URL(window.location.href);
 const id = url.searchParams.get("id");
 console.log("received id is => ", id);
-
-
-// calling fetch function to display the user data to the page
 fetchData();
-
 
 //!======================  FETCHING DATA  =======================//
 
@@ -105,118 +101,116 @@ function editFormClose() {
 
 //*======================  OPENING FORM AND SHOWING DATA TO EDIT FORM  ====================================//
 
-function editFormOpen() {
+async function editFormOpen() {
   console.log(id);
   const editopen = document.getElementById("editData");
   editopen.style.display = "block";
   const formBgopem = document.getElementById("overlayPopup");
   formBgopem.style.display = "block";
-
-  fetch(`http://localhost:3001/employees/${id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      document.getElementById("editSalutation").value = data.salutation;
-      document.getElementById("editFirstname").value = data.firstname;
-      document.getElementById("editLastname").value = data.lastname;
-      document.getElementById("editemailadd").value = data.email;
-      document.getElementById("editMobile").value = data.phone;
-      document.getElementById("editQualification").value = data.qualification;
-      document.getElementById("editAddress").value = data.address;
-      document.getElementById("editcountry").value = data.country;
-      document.getElementById("editState").value = data.state;
-      document.getElementById("editCity").value = data.city;
-      document.getElementById("editZip").value = data.pin;
-      document.getElementById("editemailadd").value = data.email;
-      document.getElementById("edituserName").value = data.username;
-      document.getElementById("editPassword").value = data.password;
-
-      //*---------dob change--------
-      const [day, month, year] = data.dob.split("-");
-      const newDob = `${year}-${month}-${day}`;
-      document.getElementById("editDob").value = newDob;
-
-      //*    GENDER
-      document.querySelector(`input[name="editGenders"][value='${data.gender}']`).checked = true;
+  try {
+    const response = await fetch(`http://localhost:3001/employees/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+    const data = await response.json();
+    console.log("jhsdgfjsghfjesdhg", data);
+    document.getElementById("editSalutation").value = data.salutation;
+    document.getElementById("editFirstname").value = data.firstname;
+    document.getElementById("editLastname").value = data.lastname;
+    document.getElementById("editemailadd").value = data.email;
+    document.getElementById("editMobile").value = data.phone;
+    document.getElementById("editQualification").value = data.qualification;
+    document.getElementById("editAddress").value = data.address;
+    document.getElementById("editcountry").value = data.country;
+    document.getElementById("editState").value = data.state;
+    document.getElementById("editCity").value = data.city;
+    document.getElementById("editZip").value = data.pin;
+    document.getElementById("editemailadd").value = data.email;
+    document.getElementById("edituserName").value = data.username;
+    document.getElementById("editPassword").value = data.password;
 
-  //*    edit page img preview
-  const editpreview = document.getElementById("editImgPrew");
-  editpreview.style.height = "150px";
-  editpreview.src = `http://localhost:3001/uploads/${id}.jpg`;
+    //*---------dob change--------
+    const [day, month, year] = data.dob.split("-");
+    const newDob = `${year}-${month}-${day}`;
+    document.getElementById("editDob").value = newDob;
 
-  //* after edit
-  let saveEdit = document.getElementById("editSubmitBtn");
-  saveEdit.addEventListener("click", () => {
-    const validate = editFormValidation();
-    if(!validate){
-      return;
-    }
-    else{
-      postdata();
-    }
-  });
+    //*    GENDER
+    document.querySelector(`input[name="editGenders"][value='${data.gender}']`).checked = true;
+
+    //*    edit page img preview
+    const editpreview = document.getElementById("editImgPrew");
+    editpreview.style.height = "150px";
+    editpreview.src = `http://localhost:3001/uploads/${id}.jpg`;
+
+    //* after edit
+    let saveEdit = document.getElementById("editSubmitBtn");
+    saveEdit.addEventListener("click", () => {
+      const validate = editFormValidation();
+      if (!validate) {
+        return;
+      } else {
+        postdata();
+      }
+    });
+  } catch (error) {
+    console.error("Eroor in Editing", error);
+  }
 }
 
-  function postdata(){
-    const salutation = document.getElementById("editSalutation").value;
-    const Firstname = document.getElementById("editFirstname").value;
-    const Lastname = document.getElementById("editLastname").value;
-    const emailadd = document.getElementById("editemailadd").value;
-    const Mobile = document.getElementById("editMobile").value;
-    const Qualification = document.getElementById("editQualification").value;
-    const Address = document.getElementById("editAddress").value;
-    const gender = document.querySelector('input[name="editGenders"]:checked').value;
-    const dob = document.getElementById("editDob").value;
-    const Country = document.getElementById("editcountry").value;
-    const state = document.getElementById("editState").value;
-    const city = document.getElementById("editCity").value;
-    const pinzip = document.getElementById("editZip").value;
-    const username = document.getElementById("edituserName").value;
-    const password = document.getElementById("editPassword").value;
+async function postdata() {
+  const salutation = document.getElementById("editSalutation").value;
+  const Firstname = document.getElementById("editFirstname").value;
+  const Lastname = document.getElementById("editLastname").value;
+  const emailadd = document.getElementById("editemailadd").value;
+  const Mobile = document.getElementById("editMobile").value;
+  const Qualification = document.getElementById("editQualification").value;
+  const Address = document.getElementById("editAddress").value;
+  const gender = document.querySelector('input[name="editGenders"]:checked').value;
+  const dob = document.getElementById("editDob").value;
+  const Country = document.getElementById("editcountry").value;
+  const state = document.getElementById("editState").value;
+  const city = document.getElementById("editCity").value;
+  const pinzip = document.getElementById("editZip").value;
+  const username = document.getElementById("edituserName").value;
+  const password = document.getElementById("editPassword").value;
 
-    //*  converting DOB
-    console.log("DOB", dob);
-    const [year, month, day] = dob.split("-");
-    const newDob = `${day}-${month}-${year}`;
-    console.log(newDob);
+  //*  converting DOB
+  console.log("DOB", dob);
+  const [year, month, day] = dob.split("-");
+  const newDob = `${day}-${month}-${year}`;
+  console.log(newDob);
 
-    //creating an object for storing user dat
-    var editedUserData = {
-      salutation: salutation,
-      firstName: Firstname,
-      lastName: Lastname,
-      email: emailadd,
-      phone: Mobile,
-      dob: newDob,
-      gender: gender,
-      qualifications: Qualification,
-      address: Address,
-      city: city,
-      state: state,
-      pin: pinzip,
-      country: Country,
-      username: username,
-      password: password,
-    };
-    console.log("edited data", editedUserData);
-    console.log("BRFORE");
-    fetch(`http://localhost:3001/employees/${id}`, {
+  //creating an object for storing user dat
+  var editedUserData = {
+    salutation: salutation,
+    firstName: Firstname,
+    lastName: Lastname,
+    email: emailadd,
+    phone: Mobile,
+    dob: newDob,
+    gender: gender,
+    qualifications: Qualification,
+    address: Address,
+    city: city,
+    state: state,
+    pin: pinzip,
+    country: Country,
+    username: username,
+    password: password,
+  };
+
+  try {
+    const response = await fetch(`http://localhost:3001/employees/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(editedUserData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Employee edited succesfully", data);
-      });
+    });
+    const data = await response.json();
+    console.log("Employee edited succesfully", data);
 
     //*   edit img upload
     const profileImg = document.getElementById("Editupload");
@@ -224,13 +218,16 @@ function editFormOpen() {
     imgObject.append("image", profileImg.files[0]);
     console.log("img added succesfully"); //avata-img section name
 
-    fetch(`http://localhost:3001/employees/${id}/image`, {
+    await fetch(`http://localhost:3001/employees/${id}/image`, {
       method: "POST",
       body: imgObject,
     });
     fetchData();
     editFormClose();
+  } catch (error) {
+    console.error("Edited data not Posted", error);
   }
+}
 
 //!         edit image change preview
 let editimage = document.getElementById("editImgPrew");
@@ -256,7 +253,6 @@ function deleteData() {
   delformclose();
   window.location.href = "/";
 }
-
 
 //!=============================  EDIT FORM VALIDATION ==============================//
 
