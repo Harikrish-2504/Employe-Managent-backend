@@ -5,7 +5,7 @@
 :root {
   --primary-bg:#F4F7FE;
   /* --primary-bg: #e5e8ee; */
-  --Primary-blue: #4318ff;
+  --Primary-blue: #FF3CAC;
   --primary-white: #ffffff;
   --primary-txt: #2b3674;
   --secondary-txt: #8f9bba;
@@ -31,8 +31,8 @@
 /* SIDEBAR START */
 .side-bar {
   min-height: 100vh;
-  background: linear-gradient(150deg, #301f81 12.51%, #0f0441 89.53%);
-}
+  background-color: #FF3CAC;
+background-image: linear-gradient(225deg, #FF3CAC 0%, #784BA0 54%, #2B86C5 99%);}
 .side-bar-heading h3 {
   color: #fff;
   font-weight: 700;

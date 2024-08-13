@@ -5,7 +5,7 @@
 :root {
 
   --primary-bg: #F4F7FE;
-  --Primary-blue: #4318ff;
+  --Primary-blue: #FF3CAC;
   --primary-white: #ffffff;
   --primary-txt: #2b3674;
   --secondary-txt: #8f9bba;
@@ -32,7 +32,12 @@
 /* SIDEBAR START */
 .side-bar {
   min-height: 100vh;
-  background: linear-gradient(150deg, #301f81 12.51%, #0f0441 89.53%);
+  /* background: linear-gradient(150deg, #301f81 12.51%, #0f0441 89.53%);  */
+  background-color: #FF3CAC;
+background-image: linear-gradient(225deg, #FF3CAC 0%, #784BA0 54%, #2B86C5 99%);
+border-top-right-radius: 40px;
+border-bottom-right-radius: 40px;
+
 }
 .side-bar-heading h3 {
   color: #fff;
@@ -252,7 +257,7 @@
 
 :root {
   --primary-bg-background: #e9edf2;
-  --primary-color: #4318ff;
+  --primary-color: #FF3CAC;
   --primary-txt: #2b3674;
   --secondary-txt-color: #8f9bba;
 }
